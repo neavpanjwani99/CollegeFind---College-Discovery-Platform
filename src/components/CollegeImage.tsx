@@ -19,7 +19,7 @@ export function CollegeImage({
   return (
     <Image
       alt={alt}
-      className={`object-cover ${className}`}
+      className={`object-contain bg-white p-6 ${className}`}
       fill
       onError={() => setImageSrc("/placeholder-college.svg")}
       priority={priority}

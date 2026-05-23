@@ -11,7 +11,7 @@ export const colleges: College[] = [
     rating: 4.9,
     totalReviews: 3420,
     rank: 1,
-    imageUrl: "/placeholder-college.svg",
+    imageUrl: "https://upload.wikimedia.org/wikipedia/en/1/1d/Indian_Institute_of_Technology_Bombay_Logo.svg",
     established: 1958,
     overview:
       "IIT Bombay is among India's most competitive engineering institutions, known for research, entrepreneurship, and deep industry connections. Its Powai campus combines rigorous academics with strong placement outcomes.",
@@ -55,7 +55,7 @@ export const colleges: College[] = [
     rating: 4.8,
     totalReviews: 3150,
     rank: 2,
-    imageUrl: "/placeholder-college.svg",
+    imageUrl: "https://upload.wikimedia.org/wikipedia/en/f/fd/Indian_Institute_of_Technology_Delhi_Logo.svg",
     established: 1961,
     overview:
       "IIT Delhi is a premier public technical institute with strong research labs, startup incubation, and top-tier engineering programs. Its location gives students access to policy, industry, and research ecosystems.",
@@ -93,7 +93,7 @@ export const colleges: College[] = [
     rating: 4.6,
     totalReviews: 2210,
     rank: 9,
-    imageUrl: "/placeholder-college.svg",
+    imageUrl: "https://upload.wikimedia.org/wikipedia/en/c/c4/National_Institute_of_Technology%2C_Tiruchirappalli_Logo.svg",
     established: 1964,
     overview:
       "NIT Trichy is one of India's leading NITs with a balanced mix of academics, campus life, and placements. It is especially strong for core engineering and technology programs.",
@@ -123,7 +123,7 @@ export const colleges: College[] = [
     rating: 4.5,
     totalReviews: 1980,
     rank: 15,
-    imageUrl: "/placeholder-college.svg",
+    imageUrl: "https://upload.wikimedia.org/wikipedia/en/d/d3/BITS_Pilani-Logo.svg",
     established: 1964,
     overview:
       "BITS Pilani is known for its flexible academic structure, strong alumni network, and practice-school model. Students value the independence and entrepreneurship culture.",
@@ -160,7 +160,7 @@ export const colleges: College[] = [
     rating: 4.2,
     totalReviews: 4100,
     rank: 20,
-    imageUrl: "/placeholder-college.svg",
+    imageUrl: "https://upload.wikimedia.org/wikipedia/en/c/c5/Vellore_Institute_of_Technology_seal_2017.svg",
     established: 1984,
     overview:
       "VIT Vellore offers a large technology-focused campus with flexible course registration and high-volume placements. It is popular for engineering aspirants seeking private university options.",
@@ -190,7 +190,7 @@ export const colleges: College[] = [
     rating: 4.9,
     totalReviews: 1720,
     rank: 3,
-    imageUrl: "/placeholder-college.svg",
+    imageUrl: "https://upload.wikimedia.org/wikipedia/en/5/58/IIM_Ahmedabad_Logo.svg",
     established: 1961,
     overview:
       "IIM Ahmedabad is India's benchmark management school, known for case-based learning, selective admissions, and top consulting and finance outcomes.",
@@ -227,7 +227,7 @@ export const colleges: College[] = [
     rating: 4.8,
     totalReviews: 1560,
     rank: 4,
-    imageUrl: "/placeholder-college.svg",
+    imageUrl: "https://upload.wikimedia.org/wikipedia/en/a/a2/IIM_Bangalore_Logo.svg",
     established: 1973,
     overview:
       "IIM Bangalore combines academic rigor with access to India's startup and technology capital. Its management programs are especially strong in strategy, analytics, and entrepreneurship.",
@@ -257,7 +257,7 @@ export const colleges: College[] = [
     rating: 4.2,
     totalReviews: 980,
     rank: 28,
-    imageUrl: "/placeholder-college.svg",
+    imageUrl: "https://upload.wikimedia.org/wikipedia/en/5/5a/Symbiosis_International_University_logo.png",
     established: 1978,
     overview:
       "SIBM Pune is a well-known private business school with strong marketing, HR, and general management outcomes. The campus has active student committees and corporate engagement.",
@@ -287,7 +287,7 @@ export const colleges: College[] = [
     rating: 4.9,
     totalReviews: 2100,
     rank: 5,
-    imageUrl: "/placeholder-college.svg",
+    imageUrl: "https://upload.wikimedia.org/wikipedia/en/0/05/All_India_Institute_of_Medical_Sciences%2C_New_Delhi_Logo.svg",
     established: 1956,
     overview:
       "AIIMS Delhi is India's most prestigious medical institution, combining clinical exposure, research, and public healthcare training at a very low fee structure.",
@@ -324,7 +324,7 @@ export const colleges: College[] = [
     rating: 4.3,
     totalReviews: 870,
     rank: 18,
-    imageUrl: "/placeholder-college.svg",
+    imageUrl: "https://upload.wikimedia.org/wikipedia/en/a/a6/Manipal_University_logo.png",
     established: 1953,
     overview:
       "KMC Manipal is a respected private medical college with modern labs, clinical training, and a diverse student community. It is costlier than public options but has strong infrastructure.",
@@ -354,7 +354,7 @@ export const colleges: College[] = [
     rating: 4.1,
     totalReviews: 2400,
     rank: 32,
-    imageUrl: "/placeholder-college.svg",
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/c/ce/Christ_University_Logo.png",
     established: 1969,
     overview:
       "Christ University is popular for arts, humanities, business, and media programs. Students often mention discipline, campus culture, and exposure to Bengaluru's professional ecosystem.",
@@ -391,7 +391,7 @@ export const colleges: College[] = [
     rating: 4.4,
     totalReviews: 760,
     rank: 22,
-    imageUrl: "/placeholder-college.svg",
+    imageUrl: "https://upload.wikimedia.org/wikipedia/en/f/fa/St._Stephen%27s_College%2C_Delhi_logo.png",
     established: 1881,
     overview:
       "St. Stephen's is one of Delhi University's most selective colleges for liberal arts and sciences. It has a strong academic culture, heritage campus, and active societies.",
@@ -421,7 +421,7 @@ export const colleges: College[] = [
     rating: 4.7,
     totalReviews: 1340,
     rank: 7,
-    imageUrl: "/placeholder-college.svg",
+    imageUrl: "https://upload.wikimedia.org/wikipedia/en/5/56/Shri_Ram_College_of_Commerce_logo.png",
     established: 1926,
     overview:
       "SRCC is a leading commerce college under Delhi University, known for economics, commerce, finance societies, and strong graduate outcomes.",
@@ -458,7 +458,7 @@ export const colleges: College[] = [
     rating: 4.0,
     totalReviews: 920,
     rank: 36,
-    imageUrl: "/placeholder-college.svg",
+    imageUrl: "https://upload.wikimedia.org/wikipedia/en/8/87/Loyola_College%2C_Chennai_logo.png",
     established: 1925,
     overview:
       "Loyola College offers respected commerce, science, and humanities programs with a strong campus identity. It is known for affordability and a large alumni base.",
@@ -488,7 +488,7 @@ export const colleges: College[] = [
     rating: 4.1,
     totalReviews: 1110,
     rank: 40,
-    imageUrl: "/placeholder-college.svg",
+    imageUrl: "https://upload.wikimedia.org/wikipedia/en/b/be/SVKM%27s_NMIMS_logo.png",
     established: 1981,
     overview:
       "NMIMS Mumbai provides business, commerce, and management programs with strong industry proximity. Students benefit from Mumbai's corporate ecosystem, though fees are above many public options.",
