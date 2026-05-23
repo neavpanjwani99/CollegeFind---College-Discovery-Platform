@@ -58,7 +58,7 @@ function Navbar() {
     <header className="sticky top-0 z-40 border-b border-border bg-white/90 shadow-[0_1px_20px_rgba(15,23,42,0.05)] backdrop-blur-sm">
       <nav className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
         <Link className="flex items-center" href="/">
-          <Image src="/logo.png" alt="CollegeFind" width={140} height={40} />
+          <Image src="/Logo.png" alt="CollegeFind" width={140} height={40} />
         </Link>
         <form className="hidden w-72 items-center rounded-lg bg-surface px-3 focus-within:ring-2 focus-within:ring-primary/20 md:flex" onSubmit={onSubmit}>
           <Search className="text-text-muted" size={17} />
@@ -148,7 +148,7 @@ function Footer() {
     <footer className="bg-[#0F172A] pb-16 pt-8 md:pb-8">
       <div className="mx-auto flex max-w-7xl flex-col gap-8 px-4 sm:px-6 lg:flex-row lg:justify-between lg:px-8">
         <div className="max-w-sm">
-          <Image src="/logo.png" alt="CollegeFind" width={140} height={40} />
+          <Image src="/Logo.png" alt="CollegeFind" width={140} height={40} />
           <p className="mt-3 text-sm text-slate-400">Helping Indian students make smarter college decisions.</p>
         </div>
         <div className="grid gap-8 sm:grid-cols-3">
