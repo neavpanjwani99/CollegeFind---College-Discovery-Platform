@@ -1,6 +1,6 @@
 "use client";
 
-import { Crown, Scale, X } from "lucide-react";
+import { Scale, Trophy, X } from "lucide-react";
 import Link from "next/link";
 import { Badge, typeVariant } from "@/components/Badge";
 import { LinkButton } from "@/components/Button";
@@ -20,7 +20,7 @@ export function ComparePageClient() {
           <Scale className="mx-auto text-text-muted" size={64} />
           <h1 className="mt-5 text-3xl font-bold text-text-primary">Compare Colleges</h1>
           <p className="mt-2 text-text-secondary">Please select at least 2 colleges to compare.</p>
-          <LinkButton className="mt-6" href="/colleges">Browse Colleges</LinkButton>
+          <LinkButton className="mt-6" href="/colleges">Start Exploring</LinkButton>
         </div>
       </div>
     );
@@ -33,17 +33,49 @@ export function ComparePageClient() {
   const bestHighest = Math.max(...compareList.map((college) => college.placements.highestPackage));
   const bestPlacement = Math.max(...compareList.map((college) => college.placements.placementRate));
 
-  const rows = [
-    { label: "Location", render: (college: College) => college.location },
-    { label: "Type", render: (college: College) => <Badge variant={typeVariant(college.type)}>{college.type}</Badge> },
-    { label: "Category", render: (college: College) => college.category },
-    { label: "National Rank", render: (college: College) => <Winner active={college.rank === bestRank}>#{college.rank}</Winner> },
-    { label: "Overall Rating", render: (college: College) => <Winner active={college.rating === bestRating}>{college.rating} <RatingStars rating={college.rating} /></Winner> },
-    { label: "Annual Fees", render: (college: College) => <Winner active={college.fees === lowestFees}>{formatFees(college.fees)}</Winner> },
-    { label: "Average Package", render: (college: College) => <Winner active={college.placements.averagePackage === bestAverage}>{formatPackage(college.placements.averagePackage)}</Winner> },
-    { label: "Highest Package", render: (college: College) => <Winner active={college.placements.highestPackage === bestHighest}>{formatPackage(college.placements.highestPackage)}</Winner> },
-    { label: "Placement Rate", render: (college: College) => <Winner active={college.placements.placementRate === bestPlacement}>{college.placements.placementRate}%</Winner> },
-    { label: "Established", render: (college: College) => college.established },
+  const rows: {
+    label: string;
+    render: (college: College) => React.ReactNode;
+    isWinner?: (college: College) => boolean;
+  }[] = [
+    { label: "Location", render: (college) => college.location },
+    { label: "Type", render: (college) => <Badge variant={typeVariant(college.type)}>{college.type}</Badge> },
+    { label: "Category", render: (college) => college.category },
+    {
+      label: "National Rank",
+      render: (college) => `#${college.rank}`,
+      isWinner: (college) => college.rank === bestRank,
+    },
+    {
+      label: "Overall Rating",
+      render: (college) => (
+        <>
+          {college.rating} <RatingStars rating={college.rating} />
+        </>
+      ),
+      isWinner: (college) => college.rating === bestRating,
+    },
+    {
+      label: "Annual Fees",
+      render: (college) => formatFees(college.fees),
+      isWinner: (college) => college.fees === lowestFees,
+    },
+    {
+      label: "Average Package",
+      render: (college) => formatPackage(college.placements.averagePackage),
+      isWinner: (college) => college.placements.averagePackage === bestAverage,
+    },
+    {
+      label: "Highest Package",
+      render: (college) => formatPackage(college.placements.highestPackage),
+      isWinner: (college) => college.placements.highestPackage === bestHighest,
+    },
+    {
+      label: "Placement Rate",
+      render: (college) => `${college.placements.placementRate}%`,
+      isWinner: (college) => college.placements.placementRate === bestPlacement,
+    },
+    { label: "Established", render: (college) => college.established },
   ];
 
   return (
@@ -54,11 +86,11 @@ export function ComparePageClient() {
       <p className="mt-2 text-text-secondary">Side-by-side comparison of your shortlisted colleges.</p>
       <div className="mt-8 overflow-x-auto rounded-xl border border-border bg-white shadow-card">
         <table className="w-full min-w-[900px] border-collapse">
-          <thead>
+          <thead className="sticky top-16 z-20">
             <tr>
-              <th className="sticky left-0 z-10 w-48 bg-surface px-4 py-4 text-left text-sm text-text-secondary">Criteria</th>
+              <th className="sticky left-0 z-30 w-48 bg-surface px-4 py-4 text-left text-sm text-text-secondary">Criteria</th>
               {compareList.map((college) => (
-                <th className="relative min-w-56 border-l border-border px-4 py-4 text-left" key={college.id}>
+                <th className="relative min-w-56 border-l border-border bg-white px-4 py-4 text-left" key={college.id}>
                   <button
                     aria-label={`Remove ${college.name}`}
                     className="absolute right-3 top-3 rounded-full p-1 text-text-muted hover:bg-surface hover:text-error"
@@ -82,8 +114,13 @@ export function ComparePageClient() {
               <tr className="border-t border-border" key={row.label}>
                 <td className="sticky left-0 bg-surface px-4 py-4 text-sm font-bold text-text-secondary">{row.label}</td>
                 {compareList.map((college) => (
-                  <td className="border-l border-border px-4 py-4 text-sm text-text-secondary" key={college.id}>
-                    {row.render(college)}
+                  <td
+                    className={`border-l border-border px-4 py-4 text-sm text-text-secondary ${
+                      row.isWinner?.(college) ? "bg-green-50" : ""
+                    }`}
+                    key={college.id}
+                  >
+                    <Winner active={Boolean(row.isWinner?.(college))}>{row.render(college)}</Winner>
                   </td>
                 ))}
               </tr>
@@ -97,8 +134,8 @@ export function ComparePageClient() {
 
 function Winner({ active, children }: { active: boolean; children: React.ReactNode }) {
   return (
-    <span className={`inline-flex items-center gap-1 rounded-lg px-2 py-1 font-semibold ${active ? "bg-green-50 text-green-700" : "text-text-secondary"}`}>
-      {active ? <Crown size={15} /> : null}
+    <span className={`inline-flex items-center gap-1 font-semibold ${active ? "text-green-700" : "text-text-secondary"}`}>
+      {active ? <Trophy size={15} /> : null}
       {children}
     </span>
   );

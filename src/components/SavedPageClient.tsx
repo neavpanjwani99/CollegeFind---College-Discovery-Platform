@@ -3,11 +3,11 @@
 import { Heart } from "lucide-react";
 import { CollegeCard } from "@/components/CollegeCard";
 import { LinkButton } from "@/components/Button";
+import { useSave } from "@/context/SaveContext";
 import { colleges } from "@/data/colleges";
-import { useSavedColleges } from "@/hooks/useSavedColleges";
 
 export function SavedPageClient() {
-  const { savedIds } = useSavedColleges();
+  const { savedIds } = useSave();
   const savedColleges = colleges.filter((college) => savedIds.includes(college.id));
 
   return (
@@ -23,9 +23,9 @@ export function SavedPageClient() {
       ) : (
         <div className="mt-8 rounded-xl border border-border bg-white p-12 text-center shadow-card">
           <Heart className="mx-auto text-text-muted" size={64} />
-          <h2 className="mt-5 text-2xl font-bold text-text-primary">No saved colleges yet</h2>
-          <p className="mt-2 text-text-secondary">Use the heart button on college cards to build a saved list.</p>
-          <LinkButton className="mt-6" href="/colleges">Browse Colleges</LinkButton>
+          <h2 className="mt-5 text-2xl font-bold text-text-primary">Your shortlist is empty</h2>
+          <p className="mt-2 text-text-secondary">Tap the heart on any college card to add it here. Compare up to 3 at once.</p>
+          <LinkButton className="mt-6" href="/colleges">Start Exploring</LinkButton>
         </div>
       )}
     </div>

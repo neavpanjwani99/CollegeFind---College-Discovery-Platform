@@ -1,9 +1,11 @@
 "use client";
 
+import { AnimatePresence, motion } from "framer-motion";
 import {
   BookOpen,
   Building2,
   Calendar,
+  CheckCircle2,
   ChevronRight,
   Contact,
   ExternalLink,
@@ -15,6 +17,7 @@ import {
   MessageSquare,
   Phone,
   Scale,
+  Star,
   TrendingUp,
   Trophy,
   Users,
@@ -28,7 +31,7 @@ import { CollegeImage } from "@/components/CollegeImage";
 import { RatingStars } from "@/components/RatingStars";
 import { useCompare } from "@/context/CompareContext";
 import { colleges } from "@/data/colleges";
-import { useSavedColleges } from "@/hooks/useSavedColleges";
+import { useSave } from "@/context/SaveContext";
 import { formatDate, formatFees, formatPackage } from "@/lib/format";
 import type { College } from "@/types/college";
 
@@ -37,7 +40,7 @@ type Tab = "Overview" | "Courses" | "Placements" | "Reviews";
 export function CollegeDetailClient({ college }: { college: College }) {
   const [tab, setTab] = useState<Tab>("Overview");
   const { addToCompare, isInCompare, removeFromCompare } = useCompare();
-  const { isSaved, toggleSaved } = useSavedColleges();
+  const { isSaved, toggleSaved } = useSave();
   const added = isInCompare(college.id);
   const saved = isSaved(college.id);
 
@@ -142,11 +145,21 @@ export function CollegeDetailClient({ college }: { college: College }) {
             </button>
           ))}
         </div>
-        <div className="mt-8">
-          {tab === "Overview" ? <OverviewTab college={college} /> : null}
-          {tab === "Courses" ? <CoursesTab college={college} /> : null}
-          {tab === "Placements" ? <PlacementsTab college={college} /> : null}
-          {tab === "Reviews" ? <ReviewsTab college={college} /> : null}
+        <div className="mt-8 rounded-xl border border-border bg-white p-4 md:p-6">
+          <AnimatePresence mode="wait">
+            <motion.div
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -12 }}
+              initial={{ opacity: 0, x: 12 }}
+              key={tab}
+              transition={{ duration: 0.22, ease: "easeInOut" }}
+            >
+              {tab === "Overview" ? <OverviewTab college={college} /> : null}
+              {tab === "Courses" ? <CoursesTab college={college} /> : null}
+              {tab === "Placements" ? <PlacementsTab college={college} /> : null}
+              {tab === "Reviews" ? <ReviewsTab college={college} /> : null}
+            </motion.div>
+          </AnimatePresence>
         </div>
       </section>
 
@@ -168,23 +181,35 @@ export function CollegeDetailClient({ college }: { college: College }) {
 
 function OverviewTab({ college }: { college: College }) {
   const stats = [
-    [BookOpen, college.courses.length.toString(), "Courses"],
-    [TrendingUp, `${college.placements.placementRate}%`, "Placement Rate"],
-    [IndianRupee, formatPackage(college.placements.averagePackage), "Avg Package"],
-    [Trophy, formatPackage(college.placements.highestPackage), "Highest Package"],
-    [Calendar, college.established.toString(), "Established"],
+    [Calendar, college.established.toString(), "Established", "text-primary"],
+    [BookOpen, college.courses.length.toString(), "Courses", "text-accent"],
+    [Trophy, `#${college.rank}`, "Rank", "text-success"],
+    [Building2, college.type, "Type", "text-purple-600"],
   ] as const;
   return (
-    <div>
-      <p className="max-w-3xl text-lg leading-relaxed text-text-secondary">{college.overview}</p>
-      <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {stats.map(([Icon, value, label]) => (
+    <div className="space-y-8">
+      <div className="rounded-xl border border-blue-100 border-l-4 border-l-primary bg-blue-50/30 p-5">
+        <p className="text-lg leading-relaxed text-text-secondary">{college.overview}</p>
+      </div>
+      <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+        {stats.map(([Icon, value, label, colorClass]) => (
           <div className="rounded-lg border border-border bg-white p-4 text-center" key={label}>
-            <Icon className="mx-auto mb-2 text-primary" size={22} />
-            <p className="text-2xl font-bold text-text-primary">{value}</p>
+            <Icon className={`mx-auto mb-2 ${colorClass}`} size={22} />
+            <p className="text-2xl font-bold tabular-nums text-text-primary">{value}</p>
             <p className="text-sm text-text-muted">{label}</p>
           </div>
         ))}
+      </div>
+      <div>
+        <h3 className="text-xl font-bold text-text-primary">Why students choose this college</h3>
+        <div className="mt-4 grid gap-3">
+          {college.tags.slice(0, 3).map((tag) => (
+            <div className="flex items-center gap-3 text-text-secondary" key={tag}>
+              <CheckCircle2 className="text-success" size={18} />
+              <span>Strong reputation for {tag.toLowerCase()}</span>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );
@@ -218,18 +243,20 @@ function CoursesTab({ college }: { college: College }) {
 
 function PlacementsTab({ college }: { college: College }) {
   const placements = college.placements;
+  const stats = [
+    [IndianRupee, formatPackage(placements.averagePackage), "Average Package", "border-l-primary", "text-primary"],
+    [Trophy, formatPackage(placements.highestPackage), "Highest Package", "border-l-success", "text-success"],
+    [TrendingUp, `${placements.placementRate}%`, "Placement Rate", "border-l-accent", "text-accent"],
+  ] as const;
+
   return (
     <div className="space-y-8">
-      <div className="grid gap-4 rounded-xl bg-surface p-4 md:grid-cols-3">
-        {[
-          [IndianRupee, formatPackage(placements.averagePackage), "Average Package"],
-          [Trophy, formatPackage(placements.highestPackage), "Highest Package"],
-          [TrendingUp, `${placements.placementRate}%`, "Placement Rate"],
-        ].map(([Icon, value, label]) => (
-          <div className="rounded-lg bg-white p-5 text-center" key={label as string}>
-            <Icon className="mx-auto mb-2 text-primary" size={24} />
-            <p className="text-3xl font-bold text-text-primary">{value as string}</p>
-            <p className="text-sm text-text-muted">{label as string}</p>
+      <div className="grid gap-4 md:grid-cols-3">
+        {stats.map(([Icon, value, label, borderClass, iconClass]) => (
+          <div className={`relative rounded-xl border border-border border-l-4 ${borderClass} bg-white p-5`} key={label}>
+            <Icon className={`absolute right-4 top-4 ${iconClass} opacity-60`} size={24} />
+            <p className="pr-10 text-3xl font-bold tabular-nums text-text-primary">{value}</p>
+            <p className="mt-1 text-sm text-text-muted">{label}</p>
           </div>
         ))}
       </div>
@@ -239,7 +266,10 @@ function PlacementsTab({ college }: { college: College }) {
           <span>{placements.placementRate}%</span>
         </div>
         <div className="h-4 overflow-hidden rounded-full bg-border">
-          <div className="h-4 rounded-full bg-success transition-all duration-1000" style={{ width: `${placements.placementRate}%` }} />
+          <div
+            className="h-4 rounded-full bg-gradient-to-r from-[#2563EB] to-[#16A34A] transition-all duration-1000"
+            style={{ width: `${placements.placementRate}%` }}
+          />
         </div>
       </div>
       <div>
@@ -249,7 +279,10 @@ function PlacementsTab({ college }: { college: College }) {
         {placements.topRecruiters.length ? (
           <div className="flex flex-wrap gap-2">
             {placements.topRecruiters.map((recruiter) => (
-              <span className="rounded-full border border-border bg-white px-4 py-2 text-sm text-text-secondary" key={recruiter}>{recruiter}</span>
+              <span className="inline-flex items-center gap-2 rounded-full border border-blue-200 bg-blue-50 px-4 py-2 text-sm text-blue-700" key={recruiter}>
+                <Building2 size={15} />
+                {recruiter}
+              </span>
             ))}
           </div>
         ) : (
@@ -261,33 +294,53 @@ function PlacementsTab({ college }: { college: College }) {
 }
 
 function ReviewsTab({ college }: { college: College }) {
+  const avatarColors = ["#2563EB", "#D97706", "#16A34A", "#7C3AED", "#EA580C", "#0F172A"];
+
   return (
     <div>
-      <div className="mb-6 rounded-xl border border-border bg-surface p-6 text-center">
-        <p className="text-5xl font-bold text-text-primary">{college.rating}</p>
-        <div className="mt-2"><RatingStars rating={college.rating} size={22} /></div>
-        <p className="mt-2 text-text-muted">Based on {college.totalReviews.toLocaleString("en-IN")} reviews</p>
+      <div className="mb-6 flex flex-wrap items-end gap-4">
+        <p className="text-5xl font-bold tabular-nums text-text-primary">{college.rating}</p>
+        <div>
+          <p className="text-sm text-text-muted">out of 5</p>
+          <p className="text-sm text-text-muted">{college.totalReviews.toLocaleString("en-IN")} reviews</p>
+          <div className="mt-2 flex gap-1">
+            {Array.from({ length: 5 }).map((_, index) => {
+              const filled = index + 1 <= Math.round(college.rating);
+              return (
+                <Star
+                  className={filled ? "fill-amber-400 text-amber-400" : "text-slate-300"}
+                  key={index}
+                  size={18}
+                />
+              );
+            })}
+          </div>
+        </div>
       </div>
+      <div className="mb-6 border-t border-border" />
       {college.reviews.length ? (
         <div className="space-y-4">
           {college.reviews.map((review) => (
-            <article className="rounded-lg border border-border bg-white p-4" key={`${review.author}-${review.date}`}>
-              <div className="flex items-start gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary text-sm font-bold text-white">
-                  {review.author.split(" ").map((part) => part[0]).join("").slice(0, 2)}
+            <article className="rounded-xl border border-border bg-white p-5" key={`${review.author}-${review.date}`}>
+              <div className="flex items-center gap-3">
+                <div
+                  className="flex h-10 w-10 items-center justify-center rounded-full text-sm font-bold text-white"
+                  style={{ backgroundColor: avatarColors[review.author.charCodeAt(0) % avatarColors.length] }}
+                >
+                  {review.author.charAt(0)}
                 </div>
-                <div>
+                <div className="min-w-0 flex-1">
                   <p className="font-semibold text-text-primary">{review.author}</p>
-                  <p className="text-xs text-text-muted">{formatDate(review.date)}</p>
-                  <div className="mt-2"><RatingStars rating={review.rating} size={15} /></div>
-                  <p className="mt-3 leading-relaxed text-text-secondary">{review.comment}</p>
                 </div>
+                <p className="text-right text-xs text-text-muted">{formatDate(review.date)}</p>
               </div>
+              <div className="mt-4"><RatingStars rating={review.rating} size={15} /></div>
+              <p className="mt-3 leading-relaxed text-slate-600">{review.comment}</p>
             </article>
           ))}
         </div>
       ) : (
-        <Empty icon={<MessageSquare size={44} />} text="No reviews yet. Be the first to review!" />
+        <Empty icon={<MessageSquare size={44} />} text="No reviews yet" />
       )}
     </div>
   );

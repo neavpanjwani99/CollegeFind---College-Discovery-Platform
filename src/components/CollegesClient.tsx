@@ -1,11 +1,13 @@
 "use client";
 
-import { ChevronLeft, ChevronRight, Filter, Search, School, SlidersHorizontal, Star, X } from "lucide-react";
+import { AnimatePresence, motion } from "framer-motion";
+import { ChevronLeft, ChevronRight, Filter, Search, School, Star, X } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Button } from "@/components/Button";
 import { CollegeCard } from "@/components/CollegeCard";
 import { colleges } from "@/data/colleges";
+import { formatFees } from "@/lib/format";
 import type { CollegeFilters, SortOption } from "@/types/college";
 
 const categories = ["All", "Engineering", "Management", "Medical", "Arts", "Commerce"];
@@ -28,13 +30,9 @@ export function CollegesClient() {
   });
   const [sortBy, setSortBy] = useState<SortOption>("rating-desc");
   const [currentPage, setCurrentPage] = useState(1);
-  const [isLoading, setIsLoading] = useState(true);
+  const isLoading = false;
+  const [filtersOpen, setFiltersOpen] = useState(false);
   const gridRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const timer = window.setTimeout(() => setIsLoading(false), 800);
-    return () => window.clearTimeout(timer);
-  }, []);
 
   useEffect(() => {
     const timer = window.setTimeout(() => setDebouncedSearch(searchQuery), 150);
@@ -88,6 +86,45 @@ export function CollegesClient() {
 
   const pageCount = Math.max(1, Math.ceil(filtered.length / pageSize));
   const pageItems = filtered.slice((currentPage - 1) * pageSize, currentPage * pageSize);
+  const resultsKey = JSON.stringify(filters) + searchQuery;
+  const activeFilterChips = [
+    searchQuery
+      ? { label: `Search: ${searchQuery}`, onRemove: () => setSearchQuery("") }
+      : null,
+    filters.category !== "All"
+      ? {
+          label: filters.category,
+          onRemove: () => setFilters((current) => ({ ...current, category: "All" })),
+        }
+      : null,
+    filters.type !== "All"
+      ? { label: filters.type, onRemove: () => setFilters((current) => ({ ...current, type: "All" })) }
+      : null,
+    filters.location
+      ? {
+          label: `Location: ${filters.location}`,
+          onRemove: () => setFilters((current) => ({ ...current, location: "" })),
+        }
+      : null,
+    filters.minFees !== ""
+      ? {
+          label: `Min Fees: ${formatFees(filters.minFees)}`,
+          onRemove: () => setFilters((current) => ({ ...current, minFees: "" })),
+        }
+      : null,
+    filters.maxFees !== ""
+      ? {
+          label: `Max Fees: ${formatFees(filters.maxFees)}`,
+          onRemove: () => setFilters((current) => ({ ...current, maxFees: "" })),
+        }
+      : null,
+    filters.minRating
+      ? {
+          label: `${filters.minRating}+ Rating`,
+          onRemove: () => setFilters((current) => ({ ...current, minRating: 0 })),
+        }
+      : null,
+  ].filter((chip): chip is { label: string; onRemove: () => void } => chip !== null);
   const hasActiveFilters =
     searchQuery ||
     filters.category !== "All" ||
@@ -111,26 +148,22 @@ export function CollegesClient() {
   return (
     <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
       <div className="mb-8 rounded-2xl border border-border bg-white p-6 shadow-card md:p-8">
-        <p className="mb-3 inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1 text-sm font-bold text-primary">
-          <SlidersHorizontal size={16} /> Discovery workspace
-        </p>
         <h1 className="text-3xl font-bold text-text-primary md:text-5xl">Find colleges with decision-ready filters</h1>
         <p className="mt-3 max-w-3xl text-text-secondary">
           Combine category, ownership type, rating, fee range, and location. Every result card keeps
           fees, placement rate, rank, and reviews visible for faster scanning.
         </p>
       </div>
-      <section className="mb-8 rounded-2xl border border-border bg-white p-4 shadow-card md:p-6">
-        <div className="mb-5 flex items-center gap-2 border-b border-border pb-4">
-          <div className="rounded-lg bg-accent/10 p-2 text-accent">
-            <Filter size={19} />
-          </div>
-          <div>
-            <h2 className="font-bold text-text-primary">Filter panel</h2>
-            <p className="text-sm text-text-muted">All filters use AND logic, exactly as the SRS requires.</p>
-          </div>
-        </div>
-        <div className="mb-5 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+      <button
+        className="mb-4 inline-flex h-11 items-center justify-center gap-2 rounded-lg border border-border bg-white px-4 text-sm font-semibold text-text-primary shadow-card lg:hidden"
+        onClick={() => setFiltersOpen((current) => !current)}
+        type="button"
+      >
+        <Filter size={18} /> Filters
+      </button>
+      <div className="lg:grid lg:grid-cols-[260px_1fr] lg:items-start lg:gap-8">
+      <section className={`${filtersOpen ? "block" : "hidden"} mb-8 rounded-2xl border border-border bg-white p-4 shadow-card md:p-6 lg:sticky lg:top-24 lg:block`}>
+        <div className="mb-5 flex flex-col gap-4">
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted" size={18} />
             <input
@@ -166,7 +199,7 @@ export function CollegesClient() {
         <FilterGroup label="Category" options={categories} value={filters.category} onChange={(value) => setFilters((current) => ({ ...current, category: value }))} />
         <FilterGroup label="Type" options={types} value={filters.type} onChange={(value) => setFilters((current) => ({ ...current, type: value }))} />
 
-        <div className="mt-5 grid gap-4 md:grid-cols-3">
+        <div className="mt-5 grid gap-4 md:grid-cols-3 lg:grid-cols-1">
           <label className="text-sm font-semibold text-text-secondary">
             Min Fees (INR)
             <input
@@ -238,18 +271,26 @@ export function CollegesClient() {
         </div>
       </section>
 
+      <div>
+      {activeFilterChips.length ? (
+        <div className="mb-5 flex flex-wrap items-center gap-2">
+          {activeFilterChips.map((chip) => (
+            <Chip label={chip.label} key={chip.label} onRemove={chip.onRemove} />
+          ))}
+          <button
+            className="text-sm font-semibold text-primary hover:text-primary-dark"
+            onClick={clearAll}
+            type="button"
+          >
+            Clear All
+          </button>
+        </div>
+      ) : null}
+
       <div className="mb-5 flex flex-col justify-between gap-3 sm:flex-row sm:items-center">
         <p aria-live="polite" className="font-semibold text-text-secondary">
-          Showing {pageItems.length} of {filtered.length} colleges
+          {hasActiveFilters ? `${filtered.length} colleges match your filters` : `Showing all ${filtered.length} colleges`}
         </p>
-        {hasActiveFilters ? (
-          <div className="flex flex-wrap gap-2">
-            {searchQuery ? <Chip label={`Search: ${searchQuery}`} onRemove={() => setSearchQuery("")} /> : null}
-            {filters.category !== "All" ? <Chip label={`Category: ${filters.category}`} onRemove={() => setFilters((current) => ({ ...current, category: "All" }))} /> : null}
-            {filters.type !== "All" ? <Chip label={`Type: ${filters.type}`} onRemove={() => setFilters((current) => ({ ...current, type: "All" }))} /> : null}
-            {filters.minRating ? <Chip label={`Rating: ${filters.minRating}+`} onRemove={() => setFilters((current) => ({ ...current, minRating: 0 }))} /> : null}
-          </div>
-        ) : null}
       </div>
 
       <div ref={gridRef}>
@@ -266,11 +307,30 @@ export function CollegesClient() {
             ))}
           </div>
         ) : pageItems.length ? (
-          <div className="grid animate-fade-in gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {pageItems.map((college) => (
-              <CollegeCard college={college} key={college.id} />
-            ))}
-          </div>
+          <AnimatePresence mode="wait">
+            <motion.div
+              animate={{ opacity: 1 }}
+              className="grid gap-6 md:grid-cols-2 lg:grid-cols-3"
+              initial={{ opacity: 0 }}
+              key={resultsKey}
+              transition={{ duration: 0.2 }}
+            >
+              {pageItems.map((college, index) => (
+                <motion.div
+                  animate={{ opacity: 1, y: 0 }}
+                  initial={{ opacity: 0, y: 24 }}
+                  key={college.id}
+                  transition={{
+                    duration: 0.35,
+                    delay: Math.min(index, 8) * 0.07,
+                    ease: [0.25, 0.46, 0.45, 0.94],
+                  }}
+                >
+                  <CollegeCard college={college} />
+                </motion.div>
+              ))}
+            </motion.div>
+          </AnimatePresence>
         ) : (
           <div className="rounded-xl border border-border bg-white p-12 text-center shadow-card">
             <School className="mx-auto text-text-muted" size={64} />
@@ -306,6 +366,8 @@ export function CollegesClient() {
           </Button>
         </div>
       ) : null}
+      </div>
+      </div>
     </div>
   );
 }
