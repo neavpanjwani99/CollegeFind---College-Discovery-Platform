@@ -317,13 +317,14 @@ export function CollegesClient() {
             >
               {pageItems.map((college, index) => (
                 <motion.div
-                  animate={{ opacity: 1, y: 0 }}
-                  initial={{ opacity: 0, y: 24 }}
+                  initial={{ opacity: 0, y: 40, scale: 0.98 }}
+                  whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                  viewport={{ once: true, margin: "-40px" }}
                   key={college.id}
                   transition={{
-                    duration: 0.35,
-                    delay: Math.min(index, 8) * 0.07,
-                    ease: [0.25, 0.46, 0.45, 0.94],
+                    duration: 0.8,
+                    delay: (index % 3) * 0.15,
+                    ease: [0.22, 1, 0.36, 1]
                   }}
                 >
                   <CollegeCard college={college} />
