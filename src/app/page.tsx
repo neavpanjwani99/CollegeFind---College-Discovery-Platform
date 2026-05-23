@@ -33,10 +33,10 @@ const howItWorks = [
 export default function Home() {
   const topColleges = getTopRatedColleges(3);
   const stats = [
-    ["Colleges Listed", 15, "", Building2],
+    ["Colleges Listed", 10, "+", Building2],
     ["Categories", 5, "", BarChart3],
-    ["Avg Placement Rate", 92, "%", TrendingUp],
-    ["Cities Covered", 12, "", MapPin],
+    ["Avg Placement Rate", 90, "+%", TrendingUp],
+    ["Cities Covered", 10, "+", MapPin],
   ] as const;
 
   return (
