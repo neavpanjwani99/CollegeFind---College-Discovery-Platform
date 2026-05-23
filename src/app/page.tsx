@@ -1,89 +1,138 @@
-import { ArrowRight, BarChart3, CheckCircle2, Heart, Search, Scale, ShieldCheck, TrendingUp } from "lucide-react";
+"use client";
+
+import { ArrowRight, BarChart3, Building2, Heart, MapPin, Search, Scale, TrendingUp } from "lucide-react";
+import Link from "next/link";
 import { CollegeCard } from "@/components/CollegeCard";
 import { LinkButton } from "@/components/Button";
+import { CountUpNumber, MotionDiv } from "@/components/ui/MotionWrapper";
 import { getTopRatedColleges } from "@/data/colleges";
+import type { College } from "@/types/college";
+
+const categories: College["category"][] = ["Engineering", "Management", "Medical", "Arts", "Commerce"];
+const howItWorks = [
+  {
+    step: "1",
+    Icon: Search,
+    title: "Search & Filter",
+    text: "Use filters for category, fees, location and rating to narrow down options.",
+  },
+  {
+    step: "2",
+    Icon: Scale,
+    title: "Compare Side by Side",
+    text: "Add up to 3 colleges and compare fees, placements, and rankings in one table.",
+  },
+  {
+    step: "3",
+    Icon: Heart,
+    title: "Save Your Shortlist",
+    text: "Save colleges you like and come back to them anytime from any device.",
+  },
+] as const;
 
 export default function Home() {
   const topColleges = getTopRatedColleges(3);
+  const stats = [
+    ["Colleges Listed", 15, "", Building2],
+    ["Categories", 5, "", BarChart3],
+    ["Avg Placement Rate", 92, "%", TrendingUp],
+    ["Cities Covered", 12, "", MapPin],
+  ] as const;
 
   return (
     <div>
-      <section className="relative overflow-hidden bg-[#0f172a] text-white">
-        <div className="absolute inset-0 bg-[url('/placeholder-college.svg')] bg-cover bg-center opacity-30" />
-        <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(15,23,42,0.95),rgba(15,23,42,0.76),rgba(15,23,42,0.36))]" />
-        <div className="relative mx-auto grid min-h-[calc(100vh-4rem)] max-w-7xl content-center gap-10 px-4 py-16 sm:px-6 md:grid-cols-[1fr_420px] md:py-20 lg:px-8">
-          <div className="max-w-3xl">
-            <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3 py-1 text-sm font-semibold text-blue-100 backdrop-blur">
-              <ShieldCheck size={16} />
-              Local mock data, no login, no backend
-            </div>
-            <h1 className="text-5xl font-bold leading-tight md:text-7xl">CollegeFind</h1>
-            <p className="mt-5 max-w-2xl text-lg leading-8 text-slate-200 md:text-xl">
-              A focused discovery workspace for Indian students to search colleges, compare decisions,
-              inspect placements, and save shortlists without leaving the browser.
+      <section className="bg-[#F8FAFC]">
+        <div className="mx-auto grid max-w-7xl items-center gap-10 px-4 py-16 sm:px-6 md:grid-cols-2 md:py-20 lg:px-8">
+          <MotionDiv
+            animate={{ opacity: 1, y: 0 }}
+            className="max-w-3xl"
+            initial={{ opacity: 0, y: 32 }}
+            transition={{ duration: 0.55, ease: [0.25, 0.46, 0.45, 0.94] }}
+          >
+            <p className="mb-5 inline-flex items-center rounded-full bg-accent/10 px-3 py-1 text-sm font-bold text-accent">
+              India&apos;s smartest college search
+            </p>
+            <h1 className="text-5xl font-bold leading-tight text-text-primary md:text-7xl">
+              Find the right college.
+              <br />
+              Not just any college.
+            </h1>
+            <p className="mt-5 max-w-2xl text-lg leading-8 text-text-secondary md:text-xl">
+              Compare fees, placements, rankings, and real reviews — all in one place. No confusion,
+              no paid promotions.
             </p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               <LinkButton href="/colleges" size="lg">
                 Explore Colleges <ArrowRight size={18} />
               </LinkButton>
-              <LinkButton className="border-white/30 bg-white/10 text-white hover:bg-white hover:text-text-primary" href="/compare" size="lg" variant="outline">
-                Compare Shortlist <Scale size={18} />
+              <LinkButton href="/compare" size="lg" variant="outline">
+                Compare Colleges <Scale size={18} />
               </LinkButton>
             </div>
-            <div className="mt-10 grid max-w-2xl gap-3 sm:grid-cols-3">
-              {["15 colleges seeded", "Static export ready", "Saved in browser"].map((item) => (
-                <div className="flex items-center gap-2 rounded-lg border border-white/15 bg-white/10 px-3 py-3 text-sm font-semibold text-slate-100 backdrop-blur" key={item}>
-                  <CheckCircle2 className="text-green-300" size={17} />
-                  {item}
+          </MotionDiv>
+
+          <MotionDiv
+            animate={{ opacity: 1, x: 0 }}
+            className="rounded-2xl border border-border bg-white p-5 shadow-card"
+            initial={{ opacity: 0, x: 32 }}
+            transition={{ duration: 0.55, delay: 0.15, ease: [0.25, 0.46, 0.45, 0.94] }}
+          >
+            <div className="mb-4 rounded-xl bg-surface p-4 text-text-primary">
+              <p className="text-sm font-semibold text-text-muted">Platform at a glance</p>
+              <p className="text-2xl font-bold tabular-nums">Rank, fees, rating</p>
+            </div>
+            <div className="grid gap-3">
+              {stats.map(([label, value, suffix, Icon]) => (
+                <div className="flex items-center justify-between gap-4 rounded-xl border border-border bg-white p-4" key={label}>
+                  <div className="flex items-center gap-3">
+                    <div className="rounded-lg bg-blue-50 p-3 text-primary">
+                      <Icon size={22} />
+                    </div>
+                    <p className="text-sm font-semibold text-text-secondary">{label}</p>
+                  </div>
+                  <p className="text-2xl font-bold tabular-nums text-text-primary">
+                    <CountUpNumber suffix={suffix} value={value} />
+                  </p>
                 </div>
               ))}
             </div>
-          </div>
-          <div className="self-end rounded-2xl border border-white/15 bg-white/12 p-4 shadow-2xl backdrop-blur-md">
-            <div className="mb-4 rounded-xl bg-white p-4 text-text-primary">
-              <div className="flex items-center justify-between gap-4">
-                <div>
-                  <p className="text-sm font-semibold text-text-muted">Decision dashboard</p>
-                  <p className="text-2xl font-bold">Rank, fees, rating</p>
-                </div>
-                <TrendingUp className="text-success" />
-              </div>
-            </div>
-            <div className="grid gap-3 sm:grid-cols-2 md:grid-cols-1">
-            {[
-              ["15", "Colleges", Search],
-              ["5", "Categories", BarChart3],
-              ["3", "Compare slots", Scale],
-              ["50", "Saved limit", Heart],
-            ].map(([value, label, Icon]) => (
-              <div className="flex items-center gap-4 rounded-xl bg-white/95 p-4 text-text-primary shadow-card" key={label as string}>
-                <div className="rounded-lg bg-blue-50 p-3 text-primary">
-                  <Icon size={24} />
-                </div>
-                <div>
-                  <p className="text-2xl font-bold text-text-primary">{value as string}</p>
-                  <p className="text-sm text-text-secondary">{label as string}</p>
-                </div>
-              </div>
-            ))}
-            </div>
-          </div>
+          </MotionDiv>
         </div>
-      </section>
-      <section className="border-y border-border bg-white">
-        <div className="mx-auto grid max-w-7xl gap-6 px-4 py-8 sm:px-6 md:grid-cols-3 lg:px-8">
-          {[
-            ["Search depth", "Name, city, state, and course matching with 150ms debounce."],
-            ["Decision safety", "Compare is capped at 3 colleges so the table stays readable."],
-            ["Beginner-friendly", "All data is local TypeScript, so the flow is easy to inspect."],
-          ].map(([title, text]) => (
-            <div className="rounded-xl border border-border bg-background p-5" key={title}>
-              <p className="font-bold text-text-primary">{title}</p>
-              <p className="mt-2 text-sm leading-6 text-text-secondary">{text}</p>
-            </div>
+        <div className="mx-auto flex max-w-7xl flex-wrap gap-3 px-4 pb-12 sm:px-6 lg:px-8">
+          {categories.map((category) => (
+            <Link
+              className="rounded-full border border-border bg-white px-4 py-2 text-sm font-semibold text-text-secondary transition hover:border-primary hover:text-primary"
+              href={`/colleges?category=${category}`}
+              key={category}
+            >
+              {category}
+            </Link>
           ))}
         </div>
       </section>
+
+      <section className="bg-white">
+        <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
+          <h2 className="text-center text-3xl font-bold text-text-primary">How CollegeFind works</h2>
+          <div className="mt-8 grid gap-6 md:grid-cols-3">
+            {howItWorks.map(({ step, Icon, title, text }) => (
+              <div className="rounded-xl border border-border bg-background p-5" key={title}>
+                <div className="flex items-center justify-between">
+                  <span className="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-sm font-bold text-white">
+                    {step}
+                  </span>
+                  <Icon className="text-primary" size={24} />
+                </div>
+                <h3 className="mt-5 text-xl font-bold text-text-primary">{title}</h3>
+                <p className="mt-2 text-sm leading-6 text-text-secondary">{text}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+
+
       <section className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
         <div className="mb-8 flex items-end justify-between gap-4">
           <div>
