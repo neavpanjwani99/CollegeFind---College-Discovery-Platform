@@ -14,10 +14,10 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   return (
     <>
       <Navbar />
-      <main className="flex-1 overflow-x-hidden">
+      <main className="flex-1 overflow-x-clip">
         <motion.div
           animate={{ opacity: 1, y: 0 }}
-          className="overflow-x-hidden"
+          className="overflow-x-clip"
           initial={{ opacity: 0, y: 8 }}
           key={pathname}
           transition={{ duration: 0.3, ease: "easeOut" }}
